@@ -104,16 +104,12 @@ if __name__ == "__main__":
     stop_thread = False
 
     throttle = Transmitter('THR', 14)
-    # thr = threading.Thread(target=throttle.update_pwm, args=(lambda: stop_thread,))
 
     pitch = Transmitter('ELE', 18)
-    # ele = threading.Thread(target=pitch.update_pwm, args=(lambda: stop_thread,))
 
     # roll = Transmitter('AILE', 15)
-    # aile = threading.Thread(target=roll.update_pwm, args=(lambda: stop_thread,))
 
     # yaw = Transmitter('RUD', 23)
-    # rud = threading.Thread(target=yaw.update_pwm, args=(lambda: stop_thread,))
 
     update_thread = threading.Thread(target=Transmitter.update_pwm, args=(lambda: stop_thread, throttle, pitch))
 
