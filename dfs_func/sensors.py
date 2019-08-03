@@ -1,6 +1,5 @@
 import time
 import RPi.GPIO as GPIO 
-# from multiprocessing import Pool
 import threading
 import smbus
 
@@ -13,32 +12,10 @@ class Transmitter:
         self.mid_point = (high_point + low_point) // 2
         self.high_point = high_point
         self.recent_read = low_point
-        self.ex = 0
         print(f"Created instance of Transmitter. Control: {self.control_type}, GPIO Pin: {self.gpio_pin}, LOW: {self.low_point}, HIGH: {self.high_point}")
 
-    def update_pwm(self, stop_thread):
-        # Add timeout
-        # GPIO.wait_for_edge(self.gpio_pin, GPIO.RISING)
-        # pulse_start = time.time()
-        # GPIO.wait_for_edge(self.gpio_pin, GPIO.FALLING)
-        # return (time.time()-pulse_start)*1_000_000
-        while True:
-            GPIO.wait_for_edge(self.gpio_pin, GPIO.RISING)
-            pulse_start = time.time()
-            GPIO.wait_for_edge(self.gpio_pin, GPIO.FALLING)
-            self.recent_read = (time.time()-pulse_start)*1_000_000
-            if stop_thread():
-                break
-            # print("Update PWM read to", self.recent_read)
-            # print("Address in update:", id(self.recent_read))
-
-    def read_pwm(self):
-        # print("Address in read:", id(self.recent_read))
-        return self.recent_read
-
-    
     @classmethod
-    def updateCls(cls, stop_thread, throttle=None, pitch=None, roll=None, yaw=None):
+    def update_pwm(cls, stop_thread, throttle=None, pitch=None, roll=None, yaw=None):
         print(f"THR: {throttle}")
         print(f"PIT: {pitch}")
         print(f"ROL: {roll}")
@@ -68,19 +45,6 @@ class Transmitter:
 
             if stop_thread() == True:
                 return None
-            # if GPIO.event_detected(thr):
-            #     # print("Throttle changed")
-            #     if GPIO.input(thr) == 1:
-            #         thr_change = time.time()
-            #     else: 
-            #         print("THR:", (time.time()-thr_change)*1_000_000)
-            # if GPIO.event_detected(pit):
-            #     # print("Pitch changed")
-            #     if GPIO.input(pit) == 1:
-            #         pit_change = time.time()
-            #     else:
-            #         print("PITCH:", (time.time()-pit_change)*1_000_000)
-
 
     def calibrate(self):
         print("Set to low")
@@ -103,6 +67,9 @@ class Transmitter:
 
     def set_pwm(self, pwm):
         self.recent_read = pwm
+
+    def get_pwm(self):
+        return self.recent_read
         
     def get_control_type(self):
         return self.control_type
@@ -132,15 +99,6 @@ def setup():
 
 
 if __name__ == "__main__":
-    # setup()
-    # pool = Pool(processes=1) 
-    # throttle = Transmitter('THR', 15)
-    # pool.apply_async(throttle.update_pwm)
-    # for i in range(10):
-    #     print("In the loop")
-    #     print(throttle.read_pwm())
-    #     time.sleep(1)
-    # GPIO.cleanup()
 
     setup()
     stop_thread = False
@@ -157,33 +115,21 @@ if __name__ == "__main__":
     # yaw = Transmitter('RUD', 23)
     # rud = threading.Thread(target=yaw.update_pwm, args=(lambda: stop_thread,))
 
-    # Transmitter.updateCls(throttle, pitch)
-    update_thread = threading.Thread(target=Transmitter.updateCls, args=(lambda: stop_thread, throttle, pitch))
-
-
-    # thr.start()
-    # ele.start()
-    # aile.start()
-    # rud.start()
+    update_thread = threading.Thread(target=Transmitter.update_pwm, args=(lambda: stop_thread, throttle, pitch))
 
     update_thread.start()
    
     for i in range(10):
         print("In the loop")
 
-        print(f"THR: {throttle.read_pwm()}")
-        print(f"ELE: {pitch.read_pwm()}")
+        print(f"THR: {throttle.get_pwm()}")
+        print(f"ELE: {pitch.get_pwm()}")
         # print(f"AILE: {roll.read_pwm()}")
         # print(f"RUD: {yaw.read_pwm()}")
 
         time.sleep(1)
         
     stop_thread = True
-
-    # thr.join()
-    # ele.join()
-    # aile.join()
-    # rud.join()
 
     update_thread.join()
     print("Successful completion")
