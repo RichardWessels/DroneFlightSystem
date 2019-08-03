@@ -21,14 +21,21 @@ class Transmitter:
         print(f"ROL: {roll}")
         print(f"YAW: {yaw}")
 
-        thr = throttle.get_gpio_pin()
-        pit = pitch.get_gpio_pin()
+        throttle_pin = throttle.get_gpio_pin()
+        pitch_pin = pitch.get_gpio_pin()
+        roll_pin = roll.get_gpio_pin()
+        yaw_pin = yaw.get_gpio_pin()
 
-        GPIO.add_event_detect(thr, GPIO.BOTH)
-        GPIO.add_event_detect(pit, GPIO.BOTH)
+
+        GPIO.add_event_detect(throttle_pin, GPIO.BOTH)
+        GPIO.add_event_detect(pitch_pin, GPIO.BOTH)
+        GPIO.add_event_detect(roll_pin, GPIO.BOTH)
+        GPIO.add_event_detect(yaw_pin, GPIO.BOTH)
 
         thr_change = 0
         pit_change = 0
+        roll_change = 0
+        yaw_change = 0
 
         def update_time(control, time_change):
             if GPIO.input(control.get_gpio_pin()) == 1:
@@ -38,10 +45,14 @@ class Transmitter:
                 return 0
 
         while True:
-            if GPIO.event_detected(thr):
+            if GPIO.event_detected(throttle_pin):
                 thr_change = update_time(throttle, thr_change)
-            if GPIO.event_detected(pit):
+            if GPIO.event_detected(pitch_pin):
                 pit_change = update_time(pitch, pit_change)
+            if GPIO.event_detected(roll_pin):
+                roll_change = update_time(roll, roll_change)
+            if GPIO.event_detected(yaw_pin):
+                yaw_change = update_time(yaw, yaw_change)
 
             if stop_thread() == True:
                 return None
@@ -49,7 +60,7 @@ class Transmitter:
     def calibrate(self):
         print("Set to low")
         while True:
-            low = self.read_pwm()
+            low = self.get_pwm()
             print(low)
             confirm = input("Enter Y to confirm: ").lower()
             if confirm == 'y':
@@ -57,7 +68,7 @@ class Transmitter:
                 break
         print("Set to high")
         while True:
-            high = self.read_pwm()
+            high = self.get_pwm()
             print(high)
             confirm = input("Enter Y to confirm: ").lower()
             if confirm == 'y':
@@ -93,9 +104,9 @@ def setup():
     GPIO.setmode(GPIO.BCM)
 
     GPIO.setup(14, GPIO.IN)
-    # GPIO.setup(15, GPIO.IN)
+    GPIO.setup(15, GPIO.IN)
     GPIO.setup(18, GPIO.IN)
-    # GPIO.setup(23, GPIO.IN)
+    GPIO.setup(23, GPIO.IN)
 
 
 if __name__ == "__main__":
@@ -107,11 +118,11 @@ if __name__ == "__main__":
 
     pitch = Transmitter('ELE', 18)
 
-    # roll = Transmitter('AILE', 15)
+    roll = Transmitter('AILE', 15)
 
-    # yaw = Transmitter('RUD', 23)
+    yaw = Transmitter('RUD', 23)
 
-    update_thread = threading.Thread(target=Transmitter.update_pwm, args=(lambda: stop_thread, throttle, pitch))
+    update_thread = threading.Thread(target=Transmitter.update_pwm, args=(lambda: stop_thread, throttle, pitch, roll, yaw))
 
     update_thread.start()
    
@@ -120,8 +131,8 @@ if __name__ == "__main__":
 
         print(f"THR: {throttle.get_pwm()}")
         print(f"ELE: {pitch.get_pwm()}")
-        # print(f"AILE: {roll.read_pwm()}")
-        # print(f"RUD: {yaw.read_pwm()}")
+        print(f"AILE: {roll.get_pwm()}")
+        print(f"RUD: {yaw.get_pwm()}")
 
         time.sleep(1)
         
