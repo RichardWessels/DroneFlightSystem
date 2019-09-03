@@ -1,0 +1,7 @@
+{
+    "transmitter": {
+        "pwm_high": 2000,
+        "pwm_mid": 1500,
+        "pwm_low": 1000
+    }
+}
