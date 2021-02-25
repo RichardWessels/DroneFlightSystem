@@ -1,7 +1,32 @@
 {
-    "transmitter": {
-        "pwm_high": 2000,
-        "pwm_mid": 1500,
-        "pwm_low": 1000
+  "transmitter": {
+      "THR": {
+          "pwm_high": 2000,
+          "pwm_mid": 1500,
+          "pwm_low": 1000 
+      },
+      "PIT": {
+          "pwm_high": 2000,
+          "pwm_mid": 1500,
+          "pwm_low": 1000 
+      },
+      "ROL": {
+          "pwm_high": 2000,
+          "pwm_mid": 1500,
+          "pwm_low": 1000 
+      },
+      "YAW": {
+          "pwm_high": 2000,
+          "pwm_mid": 1500,
+          "pwm_low": 1000 
+      }
+  },
+  
+  "imu": {
+    "gyro_bias": {
+      "x": 1.7238,
+      "y": 0.4511,
+      "z": 2.1298
     }
+  }
 }
