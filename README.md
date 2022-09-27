@@ -1,6 +1,6 @@
 # DroneFlightSystem
 
-## This repository contains the flight system for a drone that uses a Raspberry Pi as its flight controller. The repository is quite messy as many of the files were used for iterative testing (that's why there are so many pid files).
+This repository contains the flight system for a drone that uses a Raspberry Pi as its flight controller. The repository is quite messy as many of the files were used for iterative testing (that's why there are so many pid files).
 
 ## Drone in action
 ### PID tuning 
