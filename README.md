@@ -9,7 +9,7 @@ This repository contains the flight system for a drone that uses a Raspberry Pi 
 ### Diagonal motor test
 ![Diagonal motor test](https://media.giphy.com/media/7MUJxguDErxrx9e7n8/giphy.gif)
 
-*Sadly didn't take any videos with all motors running. Also, drone is definitely not suitable to fly unteathered as it will likely end up with some dead*
+*Sadly didn't take any videos with all motors running. Also, drone is definitely not suitable to fly unteathered as it will likely end up killing someone.*
 
 ## Components:
 
